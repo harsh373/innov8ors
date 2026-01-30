@@ -10,11 +10,18 @@ declare global {
   }
 }
 
+// ADD THIS EXPORT
+export interface AuthRequest extends Request {
+  clerkUserId?: string;
+  userRole?: string;
+}
+
 export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  
   try {
     console.log("===========================================");
     console.log(" AUTH MIDDLEWARE STARTED");
@@ -72,3 +79,6 @@ export const authMiddleware = async (
     });
   }
 };
+
+// ADD THIS LINE HERE ⬇️
+export const protect = authMiddleware;

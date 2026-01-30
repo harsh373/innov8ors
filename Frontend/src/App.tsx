@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import ReportPrice from "./pages/ReportPrice";
 import Result from "./pages/Result";
 import History from "./pages/History";
+import Profile from "./pages/Profile";        // ADD THIS
+import Notifications from "./pages/Notifications";  // ADD THIS
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -22,10 +24,8 @@ function App() {
       <SignedIn>
         <main className="flex-1 w-full">
           <Routes>
-            {/* Onboarding route - no protection needed */}
             <Route path="/onboarding" element={<Onboarding />} />
             
-            {/* Protected routes - require onboarding completion */}
             <Route
               path="/"
               element={
@@ -58,8 +58,24 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* ADD THESE TWO ROUTES ⬇️ */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              }
+            />
             
-            {/* Fallback */}
             <Route path="*" element={<Home />} />
           </Routes>
         </main>

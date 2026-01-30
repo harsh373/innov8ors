@@ -5,6 +5,9 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db";
 import userRoutes from "./routes/userRoute"; // Add this import
+import reportRoute from "./routes/reportRoute";
+import trendRoute from "./routes/trendRoute";
+import statsRoute from "./routes/statsRoute";
 
 const app = express();
 
@@ -32,7 +35,10 @@ app.get("/", (_req, res) => {
 });
 
 // API Routes
-app.use("/api/users", userRoutes); // Add this line
+app.use("/api/users", userRoutes); 
+app.use('/api/reports', reportRoute);
+app.use('/api/stats', statsRoute);
+app.use('/api/trends', trendRoute);
 
 // Start server (if not using a separate index.ts)
 const PORT = process.env.PORT || 5000;
