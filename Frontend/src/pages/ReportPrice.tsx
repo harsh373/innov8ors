@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useReports } from '../api/reportApi';
 import { FileText } from 'lucide-react';
-
 
 const PRODUCTS = [
   { name: 'Milk', unit: 'liter' },
@@ -12,7 +11,6 @@ const PRODUCTS = [
   { name: 'Sugar', unit: 'kg' },
   { name: 'Tomato', unit: 'kg' },
 ];
-
 
 const MARKETS = [
   'Azadpur',
@@ -23,7 +21,6 @@ const MARKETS = [
   'Okhla',
   'Rohini',
 ];
-
 
 const MONTHS = [
   'January',
@@ -42,10 +39,13 @@ const MONTHS = [
 
 const ReportPrice = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { createReport, loading } = useReports();
 
+  const prefilledProduct = location.state?.prefilledProduct || '';
+
   const [formData, setFormData] = useState({
-    productName: '',
+    productName: prefilledProduct,
     price: '',
     unit: '',
     marketName: '',
@@ -55,6 +55,19 @@ const ReportPrice = () => {
   const [errors, setErrors] = useState<any>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (prefilledProduct) {
+      const product = PRODUCTS.find((p) => p.name === prefilledProduct);
+      if (product) {
+        setFormData((prev) => ({
+          ...prev,
+          productName: prefilledProduct,
+          unit: product.unit,
+        }));
+      }
+    }
+  }, [prefilledProduct]);
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const productName = e.target.value;
@@ -96,7 +109,6 @@ const ReportPrice = () => {
       month: formData.month,
     });
 
-    
     if (result.success && typeof result.predictedPrice === 'number') {
       setPredictedPrice(result.predictedPrice);
       setShowSuccess(true);
@@ -119,7 +131,6 @@ const ReportPrice = () => {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-8">
-        
           <div className="flex items-center mb-6">
             <FileText className="text-blue-600 mr-3" size={32} />
             <div>
@@ -143,9 +154,7 @@ const ReportPrice = () => {
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Product Name *
@@ -173,7 +182,6 @@ const ReportPrice = () => {
               )}
             </div>
 
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Price (₹) *
@@ -195,7 +203,6 @@ const ReportPrice = () => {
               )}
             </div>
 
-           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Market Name *
@@ -216,7 +223,6 @@ const ReportPrice = () => {
               </select>
             </div>
 
-           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Month *
@@ -237,7 +243,6 @@ const ReportPrice = () => {
               </select>
             </div>
 
-           
             <div className="flex space-x-4">
               <button
                 type="submit"

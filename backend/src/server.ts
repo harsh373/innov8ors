@@ -9,6 +9,7 @@ import reportRoute from "./routes/reportRoute";
 import trendRoute from "./routes/trendRoute";
 import statsRoute from "./routes/statsRoute";
 import marketmapRoute from "./routes/marketmapRoute";
+import productRoute from "./routes/productRoute";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/reports', reportRoute);
 app.use('/api/stats', statsRoute);
 app.use('/api/trends', trendRoute);
 app.use('/api/markets', marketmapRoute);
+app.use('/api/products', productRoute);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -10,6 +10,8 @@ import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";  
 import ProtectedRoute from "./components/ProtectedRoute";
 import MarketMap from "./pages/Marketmap";
+import ProductDetail from "./pages/ProductDetail";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -81,6 +83,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Notifications />
+                </ProtectedRoute>
+              }
+            />
+
+            
+            <Route
+              path="/products"
+              element={
+                <ProtectedRoute>
+                  <Products />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/products/:productName"
+              element={
+                <ProtectedRoute>
+                  <ProductDetail />
                 </ProtectedRoute>
               }
             />
