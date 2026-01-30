@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getPriceAlerts, getProductTrends } from '../utils/analytics';
 import { AuthRequest } from '../middlewares/authMiddleware';
 
-// Get price alerts
+
 export const getAlerts = async (req: AuthRequest, res: Response) => {
   try {
     const alerts = await getPriceAlerts();
@@ -20,7 +20,7 @@ export const getAlerts = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get product price trends
+
 export const getTrends = async (req: Request, res: Response) => {
   try {
     const { product, area } = req.query;

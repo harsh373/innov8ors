@@ -4,7 +4,7 @@ import { validateReportInput, sanitizeInput, validatePagination } from '../utils
 import { AuthRequest } from '../middlewares/authMiddleware';
 import { checkPriceWithML } from '../services/mlService';
 
-// Month name → number mapping
+
 const MONTH_MAP: Record<string, number> = {
   January: 1,
   February: 2,
@@ -20,12 +20,12 @@ const MONTH_MAP: Record<string, number> = {
   December: 12,
 };
 
-// ======================= CREATE REPORT =======================
+
 export const createReport = async (req: AuthRequest, res: Response) => {
   try {
     const { productName, price, unit, marketName, month } = req.body;
 
-    // Validate input
+   
     const validation = validateReportInput({
       productName,
       price,
@@ -49,7 +49,7 @@ export const createReport = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // 🔥 CALL ML SERVICE
+   
     const mlResult = await checkPriceWithML({
       month: monthNumber,
       commodity_name: productName,
@@ -57,7 +57,6 @@ export const createReport = async (req: AuthRequest, res: Response) => {
       actual_price: Number(price),
     });
 
-    // 🔥 STORE FULL ML OUTPUT
     const report = await Report.create({
       userId: req.clerkUserId,
       productName: sanitizeInput(productName),
@@ -78,7 +77,7 @@ export const createReport = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    // ✅ SEND ONLY WHAT FRONTEND NEEDS
+    
     res.status(201).json({
       success: true,
       data: {
@@ -95,7 +94,7 @@ export const createReport = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// ======================= GET MY REPORTS =======================
+
 export const getMyReports = async (req: AuthRequest, res: Response) => {
   try {
     const { page, limit } = validatePagination(
@@ -131,7 +130,7 @@ export const getMyReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// ======================= GET RECENT REPORTS =======================
+
 export const getRecentReports = async (req: AuthRequest, res: Response) => {
   try {
     const reports = await Report.find({ userId: req.clerkUserId })
@@ -151,7 +150,7 @@ export const getRecentReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// ======================= DELETE REPORT =======================
+
 export const deleteReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -180,7 +179,6 @@ export const deleteReport = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// ======================= GET ALL REPORTS =======================
 export const getAllReports = async (req: AuthRequest, res: Response) => {
   try {
     const { page, limit } = validatePagination(
@@ -222,7 +220,7 @@ export const getAllReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// ======================= VERIFY REPORT =======================
+
 export const verifyReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;

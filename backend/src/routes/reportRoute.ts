@@ -18,7 +18,7 @@ router.get('/my-reports', protect, getMyReports);
 router.get('/recent', protect, getRecentReports);
 router.delete('/:id', protect, deleteReport);
 
-// Admin/Verifier routes
+
 router.get('/all', protect, isVerifier, getAllReports);
 router.patch('/verify/:id', protect, isVerifier, verifyReport);
 

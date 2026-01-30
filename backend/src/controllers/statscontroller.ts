@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { calculateUserStats } from '../utils/analytics';
 import { AuthRequest } from '../middlewares/roleMiddleware';
 
-// Get current user's statistics
+
 export const getMyStats = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.userId) {

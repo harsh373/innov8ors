@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import { useReports } from '../api/reportApi';
 import { FileText } from 'lucide-react';
 
-// Fixed product list with their units
+
 const PRODUCTS = [
   { name: 'Milk', unit: 'liter' },
   { name: 'Onion', unit: 'kg' },
@@ -13,7 +13,7 @@ const PRODUCTS = [
   { name: 'Tomato', unit: 'kg' },
 ];
 
-// Fixed market places
+
 const MARKETS = [
   'Azadpur',
   'Daryaganj',
@@ -24,7 +24,7 @@ const MARKETS = [
   'Rohini',
 ];
 
-// Months
+
 const MONTHS = [
   'January',
   'February',
@@ -96,7 +96,7 @@ const ReportPrice = () => {
       month: formData.month,
     });
 
-    // ✅ SAFE TYPE NARROWING (NO TS ERROR)
+    
     if (result.success && typeof result.predictedPrice === 'number') {
       setPredictedPrice(result.predictedPrice);
       setShowSuccess(true);
@@ -119,7 +119,7 @@ const ReportPrice = () => {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-8">
-          {/* Header */}
+        
           <div className="flex items-center mb-6">
             <FileText className="text-blue-600 mr-3" size={32} />
             <div>
@@ -132,7 +132,6 @@ const ReportPrice = () => {
             </div>
           </div>
 
-          {/* AI Predicted Price */}
           {showSuccess && predictedPrice !== null && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-blue-900 font-semibold text-lg">
@@ -146,7 +145,7 @@ const ReportPrice = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Product Name */}
+           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Product Name *
@@ -174,7 +173,7 @@ const ReportPrice = () => {
               )}
             </div>
 
-            {/* Price */}
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Price (₹) *
@@ -196,7 +195,7 @@ const ReportPrice = () => {
               )}
             </div>
 
-            {/* Market */}
+           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Market Name *
@@ -217,7 +216,7 @@ const ReportPrice = () => {
               </select>
             </div>
 
-            {/* Month */}
+           
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Month *
@@ -238,7 +237,7 @@ const ReportPrice = () => {
               </select>
             </div>
 
-            {/* Buttons */}
+           
             <div className="flex space-x-4">
               <button
                 type="submit"

@@ -182,9 +182,9 @@ const Home = () => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN (UNCHANGED & PRESENT) */}
+          
           <div className="space-y-6">
-            {/* Quick Actions */}
+            
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Quick Actions
@@ -205,7 +205,7 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Top Products */}
+            
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Your Top Products
@@ -247,7 +247,6 @@ const Home = () => {
   );
 };
 
-/* Stats Card */
 interface StatsCardProps {
   icon: any;
   label: string;

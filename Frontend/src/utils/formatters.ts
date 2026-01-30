@@ -1,4 +1,4 @@
-// Format currency in Indian Rupees
+
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -7,7 +7,7 @@ export const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
-// Format date to readable format
+
 export const formatDate = (date: Date | string): string => {
   const d = new Date(date);
   return new Intl.DateTimeFormat('en-IN', {
@@ -17,7 +17,7 @@ export const formatDate = (date: Date | string): string => {
   }).format(d);
 };
 
-// Format date with time
+
 export const formatDateTime = (date: Date | string): string => {
   const d = new Date(date);
   return new Intl.DateTimeFormat('en-IN', {
@@ -29,7 +29,7 @@ export const formatDateTime = (date: Date | string): string => {
   }).format(d);
 };
 
-// Format relative time (e.g., "2 hours ago")
+
 export const formatRelativeTime = (date: Date | string): string => {
   const d = new Date(date);
   const now = new Date();
@@ -62,13 +62,13 @@ export const formatRelativeTime = (date: Date | string): string => {
   return formatDate(d);
 };
 
-// Format price change percentage
+
 export const formatPriceChange = (change: number): string => {
   const sign = change > 0 ? '+' : '';
   return `${sign}${change.toFixed(2)}%`;
 };
 
-// Get status badge color
+
 export const getStatusColor = (status: string): string => {
   switch (status) {
     case 'verified':
@@ -82,12 +82,12 @@ export const getStatusColor = (status: string): string => {
   }
 };
 
-// Capitalize first letter
+
 export const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-// Truncate text
+
 export const truncate = (text: string, maxLength: number): string => {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';

@@ -6,9 +6,10 @@ import Home from "./pages/Home";
 import ReportPrice from "./pages/ReportPrice";
 import Result from "./pages/Result";
 import History from "./pages/History";
-import Profile from "./pages/Profile";        // ADD THIS
-import Notifications from "./pages/Notifications";  // ADD THIS
+import Profile from "./pages/Profile";        
+import Notifications from "./pages/Notifications";  
 import ProtectedRoute from "./components/ProtectedRoute";
+import MarketMap from "./pages/Marketmap";
 
 function App() {
   return (
@@ -58,12 +59,20 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* ADD THESE TWO ROUTES ⬇️ */}
+            
             <Route
               path="/profile"
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/market-map"
+              element={
+                <ProtectedRoute>
+                  <MarketMap />
                 </ProtectedRoute>
               }
             />

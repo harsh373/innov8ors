@@ -18,7 +18,7 @@ const Profile = () => {
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Profile Header */}
+        
         <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
           <div className="bg-linear-to-r from-blue-600 to-blue-700 h-32"></div>
           <div className="px-8 pb-8">
@@ -39,7 +39,7 @@ const Profile = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Account Information */}
+         
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <UserIcon className="mr-2 text-blue-600" size={24} />
@@ -67,7 +67,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Statistics */}
+       
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <TrendingUp className="mr-2 text-blue-600" size={24} />
@@ -105,7 +105,7 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Achievements */}
+         
           <div className="bg-white rounded-xl shadow-sm p-6 md:col-span-2">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Award className="mr-2 text-blue-600" size={24} />
@@ -140,7 +140,7 @@ const Profile = () => {
   );
 };
 
-// Achievement Badge Component
+
 interface AchievementBadgeProps {
   title: string;
   icon: string;

@@ -23,7 +23,7 @@ export const onboardUser = async (req: Request, res: Response) => {
       });
     }
 
-    // Validate role
+  
     if (!['user', 'admin'].includes(role)) {
       return res.status(400).json({
         success: false,
@@ -31,7 +31,7 @@ export const onboardUser = async (req: Request, res: Response) => {
       });
     }
 
-    // Verify admin code if role is admin
+    
     if (role === 'admin') {
       if (adminCode !== ADMIN_SECRET_CODE) {
         return res.status(403).json({
@@ -41,7 +41,7 @@ export const onboardUser = async (req: Request, res: Response) => {
       }
     }
 
-    // Create user
+ 
     const user = await User.create({
       clerkUserId,
       role,

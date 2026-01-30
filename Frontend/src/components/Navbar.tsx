@@ -50,7 +50,7 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* User Profile */}
+         
           <div className="flex items-center space-x-4">
             <div className="hidden md:block text-right">
               <div className="text-sm font-medium text-gray-900">
@@ -65,7 +65,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <div className="md:hidden border-t border-gray-200">
         <div className="flex justify-around py-2">
           {navItems.map((item) => {
