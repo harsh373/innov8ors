@@ -2,11 +2,9 @@ export const validateReportInput = (data: any) => {
   const errors: any = {};
 
   // Product name validation
-  if (!data.productName || data.productName.trim().length < 2) {
-    errors.productName = 'Product name must be at least 2 characters';
-  }
-  if (data.productName && data.productName.length > 100) {
-    errors.productName = 'Product name cannot exceed 100 characters';
+  const validProducts = ['Milk', 'Onion', 'Potato', 'Sugar', 'Tomato'];
+  if (!data.productName || !validProducts.includes(data.productName)) {
+    errors.productName = 'Invalid product. Must be one of: Milk, Onion, Potato, Sugar, Tomato';
   }
 
   // Price validation
@@ -18,25 +16,21 @@ export const validateReportInput = (data: any) => {
   }
 
   // Unit validation
-  const validUnits = ['kg', 'liter', 'piece', 'dozen', 'gram', 'quintal'];
+  const validUnits = ['kg', 'liter'];
   if (!data.unit || !validUnits.includes(data.unit.toLowerCase())) {
-    errors.unit = 'Invalid unit. Must be one of: kg, liter, piece, dozen, gram, quintal';
+    errors.unit = 'Invalid unit. Must be one of: kg, liter';
   }
 
-  // Store name validation
-  if (!data.storeName || data.storeName.trim().length < 2) {
-    errors.storeName = 'Store name must be at least 2 characters';
-  }
-  if (data.storeName && data.storeName.length > 200) {
-    errors.storeName = 'Store name cannot exceed 200 characters';
+  // Market name validation
+  const validMarkets = ['Azadpur', 'Daryaganj', 'Ghazipur', 'INA Market', 'Keshopur', 'Okhla', 'Rohini'];
+  if (!data.marketName || !validMarkets.includes(data.marketName)) {
+    errors.marketName = 'Invalid market. Must be one of: Azadpur, Daryaganj, Ghazipur, INA Market, Keshopur, Okhla, Rohini';
   }
 
-  // Area validation
-  if (!data.area || data.area.trim().length < 2) {
-    errors.area = 'Area must be at least 2 characters';
-  }
-  if (data.area && data.area.length > 200) {
-    errors.area = 'Area cannot exceed 200 characters';
+  // Month validation
+  const validMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  if (!data.month || !validMonths.includes(data.month)) {
+    errors.month = 'Invalid month. Must be a valid month name';
   }
 
   return {

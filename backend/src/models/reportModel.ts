@@ -5,10 +5,19 @@ export interface IReport extends Document {
   productName: string;
   price: number;
   unit: string;
-  storeName: string;
-  area: string;
-  verificationMethod: string;
+  marketName: string;
+  month: string;
+  verificationMethod: 'manual' | 'ml';
   status: 'pending' | 'verified' | 'flagged';
+
+  mlAnalysis?: {
+    mandiBenchmark: number;
+    expectedPrice: number;
+    deviation: string;
+    anomaly: boolean;
+    reason: string;
+  };
+
   verifiedBy?: string;
   verifiedAt?: Date;
   createdAt: Date;
@@ -19,51 +28,59 @@ const reportSchema = new Schema<IReport>(
   {
     userId: {
       type: String,
-      required: [true, 'User ID is required'],
+      required: true,
       index: true,
     },
     productName: {
       type: String,
-      required: [true, 'Product name is required'],
+      required: true,
       trim: true,
-      minlength: [2, 'Product name must be at least 2 characters'],
-      maxlength: [100, 'Product name cannot exceed 100 characters'],
+      enum: ['Milk', 'Onion', 'Potato', 'Sugar', 'Tomato'],
     },
     price: {
       type: Number,
-      required: [true, 'Price is required'],
-      min: [0, 'Price must be a positive number'],
+      required: true,
+      min: 0,
     },
     unit: {
       type: String,
-      required: [true, 'Unit is required'],
-      enum: {
-        values: ['kg', 'liter', 'piece', 'dozen', 'gram', 'quintal'],
-        message: '{VALUE} is not a valid unit',
-      },
+      required: true,
+      enum: ['kg', 'liter'],
     },
-    storeName: {
+    marketName: {
       type: String,
-      required: [true, 'Store name is required'],
+      required: true,
       trim: true,
-      maxlength: [200, 'Store name cannot exceed 200 characters'],
+      enum: ['Azadpur', 'Daryaganj', 'Ghazipur', 'INA Market', 'Keshopur', 'Okhla', 'Rohini'],
     },
-    area: {
+    month: {
       type: String,
-      required: [true, 'Area is required'],
-      trim: true,
-      maxlength: [200, 'Area cannot exceed 200 characters'],
+      required: true,
+      enum: [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+      ],
     },
     verificationMethod: {
       type: String,
+      enum: ['manual', 'ml'],
       default: 'manual',
-      enum: ['manual'],
     },
     status: {
       type: String,
-      default: 'pending',
       enum: ['pending', 'verified', 'flagged'],
+      default: 'pending',
     },
+
+    // 🔥 ML OUTPUT STORED HERE
+    mlAnalysis: {
+      mandiBenchmark: Number,
+      expectedPrice: Number,
+      deviation: String,
+      anomaly: Boolean,
+      reason: String,
+    },
+
     verifiedBy: {
       type: String,
       default: null,
@@ -73,14 +90,12 @@ const reportSchema = new Schema<IReport>(
       default: null,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Indexes for better query performance
+// Indexes
 reportSchema.index({ userId: 1, createdAt: -1 });
-reportSchema.index({ productName: 1, area: 1, createdAt: -1 });
+reportSchema.index({ productName: 1, marketName: 1, createdAt: -1 });
 reportSchema.index({ status: 1 });
 
 export const Report = mongoose.model<IReport>('Report', reportSchema);

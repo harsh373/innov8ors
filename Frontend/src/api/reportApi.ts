@@ -1,34 +1,55 @@
 import { useState, useCallback } from 'react';
 import api from './axios';
 
+// =======================
 // TypeScript Interfaces
+// =======================
+
+// Used for list / fetch APIs
 export interface Report {
   _id: string;
   userId: string;
   productName: string;
   price: number;
   unit: string;
-  storeName: string;
-  area: string;
+  marketName: string;
+  month: string;
   verificationMethod: string;
   status: 'pending' | 'verified' | 'flagged';
   verifiedBy?: string;
   verifiedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+
+  // ML stored but not necessarily shown everywhere
+  mlAnalysis?: {
+    mandiBenchmark: number;
+    expectedPrice: number;
+    deviation: string;
+    anomaly: boolean;
+    reason: string;
+  };
 }
 
+// Payload sent from frontend
 export interface CreateReportData {
   productName: string;
   price: number;
   unit: string;
-  storeName: string;
-  area: string;
+  marketName: string;
+  month: string;
 }
 
-export interface ReportResponse {
+// 🔥 RESPONSE FROM CREATE REPORT API (IMPORTANT)
+export interface CreateReportResponseData {
+  _id: string;
+  predictedPrice: number;
+}
+
+// Generic API response
+export interface ReportResponse<T = any> {
   success: boolean;
-  data?: Report | Report[];
+  data?: T;
   message?: string;
   errors?: any;
   pagination?: {
@@ -39,22 +60,31 @@ export interface ReportResponse {
   };
 }
 
+// =======================
 // API Functions
+// =======================
 export const reportApi = {
-  // Create a new report
-  createReport: async (data: CreateReportData): Promise<ReportResponse> => {
+  // Create a new report (returns ONLY predictedPrice)
+  createReport: async (
+    data: CreateReportData
+  ): Promise<ReportResponse<CreateReportResponseData>> => {
     const response = await api.post('/reports/create', data);
     return response.data;
   },
 
-  // Get user's reports with pagination
-  getMyReports: async (page = 1, limit = 10): Promise<ReportResponse> => {
-    const response = await api.get(`/reports/my-reports?page=${page}&limit=${limit}`);
+  // Get user's reports
+  getMyReports: async (
+    page = 1,
+    limit = 10
+  ): Promise<ReportResponse<Report[]>> => {
+    const response = await api.get(
+      `/reports/my-reports?page=${page}&limit=${limit}`
+    );
     return response.data;
   },
 
   // Get recent 5 reports
-  getRecentReports: async (): Promise<ReportResponse> => {
+  getRecentReports: async (): Promise<ReportResponse<Report[]>> => {
     const response = await api.get('/reports/recent');
     return response.data;
   },
@@ -65,21 +95,32 @@ export const reportApi = {
     return response.data;
   },
 
-  // Get all reports (Admin/Verifier only)
-  getAllReports: async (page = 1, limit = 10, status?: string): Promise<ReportResponse> => {
-    const query = status ? `?page=${page}&limit=${limit}&status=${status}` : `?page=${page}&limit=${limit}`;
+  // Get all reports (Admin)
+  getAllReports: async (
+    page = 1,
+    limit = 10,
+    status?: string
+  ): Promise<ReportResponse<Report[]>> => {
+    const query = status
+      ? `?page=${page}&limit=${limit}&status=${status}`
+      : `?page=${page}&limit=${limit}`;
     const response = await api.get(`/reports/all${query}`);
     return response.data;
   },
 
-  // Verify a report (Admin/Verifier only)
-  verifyReport: async (id: string, status: 'verified' | 'flagged'): Promise<ReportResponse> => {
+  // Verify report
+  verifyReport: async (
+    id: string,
+    status: 'verified' | 'flagged'
+  ): Promise<ReportResponse<Report>> => {
     const response = await api.patch(`/reports/verify/${id}`, { status });
     return response.data;
   },
 };
 
+// =======================
 // Custom Hook: useReports
+// =======================
 export const useReports = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
@@ -97,7 +138,7 @@ export const useReports = () => {
     setError(null);
     try {
       const response = await reportApi.getMyReports(page, limit);
-      if (response.success && Array.isArray(response.data)) {
+      if (response.success && response.data) {
         setReports(response.data);
         if (response.pagination) {
           setPagination(response.pagination);
@@ -116,7 +157,7 @@ export const useReports = () => {
     setError(null);
     try {
       const response = await reportApi.getRecentReports();
-      if (response.success && Array.isArray(response.data)) {
+      if (response.success && response.data) {
         setReports(response.data);
       }
     } catch (err: any) {
@@ -126,14 +167,17 @@ export const useReports = () => {
     }
   }, []);
 
-  // Create a new report
+  // 🔥 Create report (returns predictedPrice only)
   const createReport = useCallback(async (data: CreateReportData) => {
     setLoading(true);
     setError(null);
     try {
       const response = await reportApi.createReport(data);
-      if (response.success) {
-        return { success: true, data: response.data };
+      if (response.success && response.data) {
+        return {
+          success: true,
+          predictedPrice: response.data.predictedPrice,
+        };
       }
       return { success: false, errors: response.errors };
     } catch (err: any) {
@@ -144,7 +188,7 @@ export const useReports = () => {
     }
   }, []);
 
-  // Delete a report
+  // Delete report
   const deleteReport = useCallback(async (id: string) => {
     setLoading(true);
     setError(null);

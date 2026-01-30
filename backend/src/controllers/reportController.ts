@@ -1,57 +1,101 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Report } from '../models/reportModel';
 import { validateReportInput, sanitizeInput, validatePagination } from '../utils/validators';
-import { AuthRequest } from '../middlewares/roleMiddleware';
+import { AuthRequest } from '../middlewares/authMiddleware';
+import { checkPriceWithML } from '../services/mlService';
 
-// Create a new price report
+// Month name → number mapping
+const MONTH_MAP: Record<string, number> = {
+  January: 1,
+  February: 2,
+  March: 3,
+  April: 4,
+  May: 5,
+  June: 6,
+  July: 7,
+  August: 8,
+  September: 9,
+  October: 10,
+  November: 11,
+  December: 12,
+};
+
+// ======================= CREATE REPORT =======================
 export const createReport = async (req: AuthRequest, res: Response) => {
   try {
-    const { productName, price, unit, storeName, area } = req.body;
+    const { productName, price, unit, marketName, month } = req.body;
 
     // Validate input
     const validation = validateReportInput({
       productName,
       price,
       unit,
-      storeName,
-      area,
+      marketName,
+      month,
     });
 
     if (!validation.isValid) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
         errors: validation.errors,
       });
     }
 
-    // Create report
-    const report = await Report.create({
-      userId: req.userId,
-      productName: sanitizeInput(productName),
-      price: parseFloat(price),
-      unit: unit.toLowerCase(),
-      storeName: sanitizeInput(storeName),
-      area: sanitizeInput(area),
-      verificationMethod: 'manual',
-      status: 'pending',
+    const monthNumber = MONTH_MAP[month];
+    if (!monthNumber) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid month',
+      });
+    }
+
+    // 🔥 CALL ML SERVICE
+    const mlResult = await checkPriceWithML({
+      month: monthNumber,
+      commodity_name: productName,
+      market_name: marketName,
+      actual_price: Number(price),
     });
 
+    // 🔥 STORE FULL ML OUTPUT
+    const report = await Report.create({
+      userId: req.clerkUserId,
+      productName: sanitizeInput(productName),
+      price: Number(price),
+      unit: unit.toLowerCase(),
+      marketName: sanitizeInput(marketName),
+      month,
+
+      verificationMethod: 'ml',
+      status: 'pending',
+
+      mlAnalysis: {
+        mandiBenchmark: mlResult.mandi_benchmark,
+        expectedPrice: mlResult.expected_price,
+        deviation: mlResult.deviation,
+        anomaly: mlResult.is_anomaly,
+        reason: mlResult.reason,
+      },
+    });
+
+    // ✅ SEND ONLY WHAT FRONTEND NEEDS
     res.status(201).json({
       success: true,
-      message: 'Report created successfully',
-      data: report,
+      data: {
+        _id: report._id,
+        predictedPrice: mlResult.expected_price,
+      },
     });
   } catch (error: any) {
     console.error('Create report error:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Error creating report',
+      message: 'Failed to create report',
     });
   }
 };
 
-// Get user's own reports
+// ======================= GET MY REPORTS =======================
 export const getMyReports = async (req: AuthRequest, res: Response) => {
   try {
     const { page, limit } = validatePagination(
@@ -61,12 +105,12 @@ export const getMyReports = async (req: AuthRequest, res: Response) => {
 
     const skip = (page - 1) * limit;
 
-    const reports = await Report.find({ userId: req.userId })
+    const reports = await Report.find({ userId: req.clerkUserId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Report.countDocuments({ userId: req.userId });
+    const total = await Report.countDocuments({ userId: req.clerkUserId });
 
     res.status(200).json({
       success: true,
@@ -87,10 +131,10 @@ export const getMyReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get recent reports (last 5)
+// ======================= GET RECENT REPORTS =======================
 export const getRecentReports = async (req: AuthRequest, res: Response) => {
   try {
-    const reports = await Report.find({ userId: req.userId })
+    const reports = await Report.find({ userId: req.clerkUserId })
       .sort({ createdAt: -1 })
       .limit(5);
 
@@ -107,12 +151,12 @@ export const getRecentReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Delete a report
+// ======================= DELETE REPORT =======================
 export const deleteReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const report = await Report.findOne({ _id: id, userId: req.userId });
+    const report = await Report.findOne({ _id: id, userId: req.clerkUserId });
 
     if (!report) {
       return res.status(404).json({
@@ -136,7 +180,7 @@ export const deleteReport = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get all reports (Admin/Verifier only)
+// ======================= GET ALL REPORTS =======================
 export const getAllReports = async (req: AuthRequest, res: Response) => {
   try {
     const { page, limit } = validatePagination(
@@ -178,7 +222,7 @@ export const getAllReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Verify a report (Admin/Verifier only)
+// ======================= VERIFY REPORT =======================
 export const verifyReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -187,7 +231,7 @@ export const verifyReport = async (req: AuthRequest, res: Response) => {
     if (!['verified', 'flagged'].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid status. Must be "verified" or "flagged"',
+        message: 'Invalid status',
       });
     }
 
@@ -195,7 +239,7 @@ export const verifyReport = async (req: AuthRequest, res: Response) => {
       id,
       {
         status,
-        verifiedBy: req.userId,
+        verifiedBy: req.clerkUserId,
         verifiedAt: new Date(),
       },
       { new: true }
@@ -210,7 +254,6 @@ export const verifyReport = async (req: AuthRequest, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'Report verified successfully',
       data: report,
     });
   } catch (error: any) {
