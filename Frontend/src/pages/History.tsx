@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
+
 import { useReports } from '../api/reportApi';
 import { History as HistoryIcon, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatCurrency, formatDateTime } from '../utils/formatters';
@@ -32,7 +32,7 @@ const History = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+     
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+
 import { useReports } from '../api/reportApi';
 import { FileText } from 'lucide-react';
 
@@ -127,7 +127,7 @@ const ReportPrice = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+     
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm p-8">

@@ -13,6 +13,8 @@ import MarketMap from "./pages/Marketmap";
 import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
 import InstallPWA from "./components/InstallPWA";
+import Navbar from "./components/Navbar";
+import MobileNavbar from "./components/MobileNavbar";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import FlaggedReports from "./pages/admin/FlaggedReports";
@@ -34,7 +36,10 @@ function App() {
       </SignedOut>
 
       <SignedIn>
-        <main className="flex-1 w-full">
+        <Navbar />
+        <MobileNavbar />
+        
+        <main className="flex-1 w-full pt-16 pb-20 md:pt-0 md:pb-0">
           <Routes>
             <Route path="/onboarding" element={<Onboarding />} />
             
@@ -113,7 +118,6 @@ function App() {
               }
             />
 
-            
             <Route
               path="/admin"
               element={
