@@ -56,7 +56,8 @@ const Navbar = () => {
               <div className="text-xs text-gray-500">
                 {user?.primaryEmailAddress?.emailAddress}
               </div>
-            </div>
+                      </div>
+                      
             <UserButton afterSignOutUrl="/login" />
           </div>
         </div>
