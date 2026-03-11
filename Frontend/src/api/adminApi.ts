@@ -81,16 +81,12 @@ export const markReportValid = async (id: string): Promise<void> => {
   await api.patch(`/admin/reports/${id}/mark-valid`);
 };
 
-/**
- * 4️⃣ Delete report
- */
+
 export const deleteReport = async (id: string): Promise<void> => {
   await api.delete(`/admin/reports/${id}`);
 };
 
-/**
- * 5️⃣ Get market health overview
- */
+
 export const getMarketHealth = async (): Promise<MarketHealth[]> => {
   const response = await api.get<{
     success: boolean;

@@ -16,7 +16,7 @@ export const checkRole = (allowedRoles: string[]) => {
         });
       }
 
-      // Fetch user from database
+     
       const user = await User.findOne({ clerkId: req.userId });
 
       if (!user) {
@@ -26,7 +26,7 @@ export const checkRole = (allowedRoles: string[]) => {
         });
       }
 
-      // Check if user role is allowed
+   
       if (!allowedRoles.includes(user.role)) {
         return res.status(403).json({
           success: false,
@@ -34,7 +34,7 @@ export const checkRole = (allowedRoles: string[]) => {
         });
       }
 
-      // Attach user to request
+   
       req.user = user;
       next();
     } catch (error) {

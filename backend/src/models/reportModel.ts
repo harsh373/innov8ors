@@ -72,7 +72,7 @@ const reportSchema = new Schema<IReport>(
       default: 'pending',
     },
 
-    // 🔥 ML OUTPUT STORED HERE
+   
     mlAnalysis: {
       mandiBenchmark: Number,
       expectedPrice: Number,
@@ -93,7 +93,7 @@ const reportSchema = new Schema<IReport>(
   { timestamps: true }
 );
 
-// Indexes
+
 reportSchema.index({ userId: 1, createdAt: -1 });
 reportSchema.index({ productName: 1, marketName: 1, createdAt: -1 });
 reportSchema.index({ status: 1 });

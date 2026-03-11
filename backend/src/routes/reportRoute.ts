@@ -12,7 +12,7 @@ import { isVerifier } from '../middlewares/roleMiddleware';
 
 const router = express.Router();
 
-// User routes (protected)
+
 router.post('/create', protect, createReport);
 router.get('/my-reports', protect, getMyReports);
 router.get('/recent', protect, getRecentReports);

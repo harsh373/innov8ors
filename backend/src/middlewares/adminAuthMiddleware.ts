@@ -12,7 +12,7 @@ export const adminAuthMiddleware = async (
   
     console.log("Route:", req.method, req.path);
 
-    // Check if user is authenticated (from authMiddleware)
+  
     if (!req.clerkUserId) {
       console.log(" No clerkUserId found");
      
