@@ -28,7 +28,7 @@ export const useMarketMap = () => {
 
     try {
       const response = await axios.get<MarketMapResponse>(
-        `${API_URL}/markets/map-view`,  // ✅ REMOVED /api prefix
+        `${API_URL}/markets/map-view`, 
         {
           params: {
             product,

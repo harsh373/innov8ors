@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import api from './axios';
 
-// TypeScript Interfaces
+
 export interface PriceAlert {
   product: string;
   area: string;
@@ -34,13 +34,13 @@ export interface TrendResponse {
 
 // API Functions
 export const trendApi = {
-  // Get price alerts
+
   getAlerts: async (): Promise<AlertResponse> => {
     const response = await api.get('/trends/alerts');
     return response.data;
   },
 
-  // Get product trends
+
   getProductTrends: async (product: string, area?: string): Promise<TrendResponse> => {
     const query = area ? `?product=${product}&area=${area}` : `?product=${product}`;
     const response = await api.get(`/trends/product${query}`);
@@ -48,7 +48,7 @@ export const trendApi = {
   },
 };
 
-// Custom Hook: useTrends
+
 export const useTrends = () => {
   const [alerts, setAlerts] = useState<PriceAlert[]>([]);
   const [trends, setTrends] = useState<ProductTrend[]>([]);

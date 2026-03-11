@@ -12,7 +12,6 @@ api.interceptors.request.use(
     try {
       console.log("Getting Clerk token...");
       
-      // Try the new Clerk.session.getToken() method
       const token = await (window as any).Clerk?.session?.getToken();
       
       console.log("Token obtained:", token ? "YES" : " NO");

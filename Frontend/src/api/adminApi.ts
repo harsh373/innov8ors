@@ -1,8 +1,5 @@
 import api from './axios';
 
-// ==========================================
-// TYPES
-// ==========================================
 
 export interface FlaggedReport {
   _id: string;
@@ -47,13 +44,7 @@ export interface UserActivity {
   lastActivity: string;
 }
 
-// ==========================================
-// API FUNCTIONS
-// ==========================================
 
-/**
- * 1️⃣ Get all flagged reports
- */
 export const getFlaggedReports = async (): Promise<FlaggedReport[]> => {
   const response = await api.get<{
     success: boolean;
@@ -74,9 +65,7 @@ export const inspectReport = async (id: string): Promise<ReportDetail> => {
   return response.data.data;
 };
 
-/**
- * 3️⃣ Mark report as valid
- */
+
 export const markReportValid = async (id: string): Promise<void> => {
   await api.patch(`/admin/reports/${id}/mark-valid`);
 };
@@ -96,9 +85,6 @@ export const getMarketHealth = async (): Promise<MarketHealth[]> => {
   return response.data.data;
 };
 
-/**
- * 6️⃣ Get user activity overview
- */
 export const getUserActivity = async (): Promise<UserActivity[]> => {
   const response = await api.get<{
     success: boolean;

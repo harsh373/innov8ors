@@ -23,25 +23,18 @@ export interface OnboardResponse {
   };
 }
 
-/**
- * Onboard a new user
- */
+
 export const onboardUser = async (payload: OnboardUserPayload): Promise<OnboardResponse> => {
   const response = await api.post<OnboardResponse>('/users/onboard', payload);
   return response.data;
 };
 
-/**
- * Get current user details
- */
+
 export const getCurrentUser = async (): Promise<UserResponse> => {
   const response = await api.get<UserResponse>('/users/me');
   return response.data;
 };
 
-/**
- * Check if user needs onboarding
- */
 export const checkOnboardingStatus = async (): Promise<{ needsOnboarding: boolean; role?: string }> => {
   try {
     const response = await getCurrentUser();
@@ -50,7 +43,7 @@ export const checkOnboardingStatus = async (): Promise<{ needsOnboarding: boolea
       role: response.data?.role,
     };
   } catch (error: any) {
-    // If user not found (404), they need onboarding
+    // If user not found
     if (error.response?.status === 404 || error.response?.data?.needsOnboarding) {
       return { needsOnboarding: true };
     }

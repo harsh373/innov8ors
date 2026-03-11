@@ -1,11 +1,7 @@
 import { useState, useCallback } from 'react';
 import api from './axios';
 
-// =======================
-// TypeScript Interfaces
-// =======================
 
-// Used for list / fetch APIs
 export interface Report {
   _id: string;
   userId: string;
@@ -21,7 +17,7 @@ export interface Report {
   createdAt: Date;
   updatedAt: Date;
 
-  // ML stored but not necessarily shown everywhere
+
   mlAnalysis?: {
     mandiBenchmark: number;
     expectedPrice: number;
@@ -31,7 +27,7 @@ export interface Report {
   };
 }
 
-// Payload sent from frontend
+
 export interface CreateReportData {
   productName: string;
   price: number;
@@ -40,13 +36,13 @@ export interface CreateReportData {
   month: string;
 }
 
-// 🔥 RESPONSE FROM CREATE REPORT API (IMPORTANT)
+
 export interface CreateReportResponseData {
   _id: string;
   predictedPrice: number;
 }
 
-// Generic API response
+
 export interface ReportResponse<T = any> {
   success: boolean;
   data?: T;
@@ -60,11 +56,9 @@ export interface ReportResponse<T = any> {
   };
 }
 
-// =======================
-// API Functions
-// =======================
+
 export const reportApi = {
-  // Create a new report (returns ONLY predictedPrice)
+  
   createReport: async (
     data: CreateReportData
   ): Promise<ReportResponse<CreateReportResponseData>> => {
@@ -72,7 +66,7 @@ export const reportApi = {
     return response.data;
   },
 
-  // Get user's reports
+  
   getMyReports: async (
     page = 1,
     limit = 10
@@ -83,19 +77,19 @@ export const reportApi = {
     return response.data;
   },
 
-  // Get recent 5 reports
+ 
   getRecentReports: async (): Promise<ReportResponse<Report[]>> => {
     const response = await api.get('/reports/recent');
     return response.data;
   },
 
-  // Delete a report
+ 
   deleteReport: async (id: string): Promise<ReportResponse> => {
     const response = await api.delete(`/reports/${id}`);
     return response.data;
   },
 
-  // Get all reports (Admin)
+  
   getAllReports: async (
     page = 1,
     limit = 10,
@@ -108,7 +102,6 @@ export const reportApi = {
     return response.data;
   },
 
-  // Verify report
   verifyReport: async (
     id: string,
     status: 'verified' | 'flagged'
@@ -118,9 +111,7 @@ export const reportApi = {
   },
 };
 
-// =======================
-// Custom Hook: useReports
-// =======================
+
 export const useReports = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
@@ -132,7 +123,7 @@ export const useReports = () => {
     pages: 0,
   });
 
-  // Fetch user's reports
+  
   const fetchReports = useCallback(async (page = 1, limit = 10) => {
     setLoading(true);
     setError(null);
@@ -151,7 +142,7 @@ export const useReports = () => {
     }
   }, []);
 
-  // Fetch recent reports
+
   const fetchRecentReports = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -167,7 +158,7 @@ export const useReports = () => {
     }
   }, []);
 
-  // 🔥 Create report (returns predictedPrice only)
+  
   const createReport = useCallback(async (data: CreateReportData) => {
     setLoading(true);
     setError(null);
