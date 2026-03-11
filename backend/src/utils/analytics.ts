@@ -2,31 +2,16 @@ import { Report } from '../models/reportModel';
 
 export const calculateUserStats = async (userId: string) => {
   try {
-    // Total reports by user
     const totalReports = await Report.countDocuments({ userId });
 
-    // Reports by status
     const statusCounts = await Report.aggregate([
       { $match: { userId } },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 },
-        },
-      },
+      { $group: { _id: '$status', count: { $sum: 1 } } },
     ]);
 
-    const statusMap: any = {
-      pending: 0,
-      verified: 0,
-      flagged: 0,
-    };
+    const statusMap: any = { pending: 0, verified: 0, flagged: 0 };
+    statusCounts.forEach((item) => { statusMap[item._id] = item.count; });
 
-    statusCounts.forEach((item) => {
-      statusMap[item._id] = item.count;
-    });
-
-    // Recent activity (last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -35,16 +20,9 @@ export const calculateUserStats = async (userId: string) => {
       createdAt: { $gte: sevenDaysAgo },
     });
 
-    // Most reported products
     const topProducts = await Report.aggregate([
       { $match: { userId } },
-      {
-        $group: {
-          _id: '$productName',
-          count: { $sum: 1 },
-          avgPrice: { $avg: '$price' },
-        },
-      },
+      { $group: { _id: '$productName', count: { $sum: 1 }, avgPrice: { $avg: '$price' } } },
       { $sort: { count: -1 } },
       { $limit: 5 },
     ]);
@@ -71,19 +49,18 @@ export const getPriceAlerts = async () => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    // Get price trends for products
     const priceData = await Report.aggregate([
       {
         $match: {
           createdAt: { $gte: thirtyDaysAgo },
-          status: 'verified',
+          status: { $in: ['verified', 'pending'] }, // include pending too
         },
       },
       {
         $group: {
           _id: {
             product: '$productName',
-            area: '$area',
+            area: '$marketName', 
           },
           prices: { $push: { price: '$price', date: '$createdAt' } },
           avgPrice: { $avg: '$price' },
@@ -92,7 +69,7 @@ export const getPriceAlerts = async () => {
       },
       {
         $match: {
-          count: { $gte: 3 }, // At least 3 reports
+          count: { $gte: 2 }, 
         },
       },
     ]);
@@ -137,11 +114,11 @@ export const getProductTrends = async (productName: string, area?: string) => {
     const match: any = {
       productName: new RegExp(productName, 'i'),
       createdAt: { $gte: thirtyDaysAgo },
-      status: 'verified',
+      status: { $in: ['verified', 'pending'] }, 
     };
 
     if (area) {
-      match.area = new RegExp(area, 'i');
+      match.marketName = new RegExp(area, 'i');
     }
 
     const trends = await Report.aggregate([
