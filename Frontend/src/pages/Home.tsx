@@ -224,7 +224,7 @@ const Home = () => {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
               <h2 className="text-base font-bold text-gray-900 mb-4">Market Coverage</h2>
               <div className="grid grid-cols-2 gap-2">
-                {['Azadpur', 'Okhla', 'Ghazipur', 'Shahdara', 'Keshopur', 'Lawrence Rd', 'Narela'].map((market) => (
+                {['Azadpur', 'Daryaganj', 'Ghazipur', 'INA Market', 'Keshopur', 'Okhla', 'Rohini'].map((market) => (
                   <div
                     key={market}
                     className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl text-xs font-medium text-gray-600"
