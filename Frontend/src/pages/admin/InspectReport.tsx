@@ -165,7 +165,7 @@ const InspectReport = () => {
             </div>
           </div>
 
-          {/* Price Info */}
+        
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Price Information
@@ -193,7 +193,7 @@ const InspectReport = () => {
           </div>
         </div>
 
-        {/* Right Column - ML Analysis */}
+       
         <div className="space-y-6">
           {/* Anomaly Alert */}
           <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">

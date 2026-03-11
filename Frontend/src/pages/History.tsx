@@ -128,7 +128,7 @@ const History = () => {
                         </div>
                       </td>
 
-                      {/* 🔥 AI PREDICTED PRICE */}
+                     
                       <td className="px-6 py-4">
                         <div className="text-lg font-semibold text-blue-700">
                           {report.mlAnalysis?.expectedPrice
@@ -166,7 +166,6 @@ const History = () => {
               </table>
             </div>
 
-            {/* Pagination */}
             {pagination.pages > 1 && (
               <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-between">
                 <div className="text-sm text-gray-700">

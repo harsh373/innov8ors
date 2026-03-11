@@ -169,7 +169,7 @@ const UserActivityPage = () => {
         )}
       </div>
 
-      {/* Summary Cards */}
+      
       {users.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white rounded-xl shadow-sm p-6">

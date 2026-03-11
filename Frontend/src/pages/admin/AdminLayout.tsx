@@ -88,7 +88,7 @@ const AdminLayout = () => {
             </div>
           </div>
 
-          {/* Main Content */}
+        
           <div className="flex-1">
             <Outlet />
           </div>

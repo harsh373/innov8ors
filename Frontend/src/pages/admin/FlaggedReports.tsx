@@ -61,7 +61,7 @@ const FlaggedReports = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -80,7 +80,7 @@ const FlaggedReports = () => {
         </div>
       </div>
 
-      {/* Reports Table */}
+     
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {reports.length === 0 ? (
           <div className="text-center py-12">
