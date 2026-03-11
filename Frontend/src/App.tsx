@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
+import Login from "./pages/LandingLogin";
 import Onboarding from "./pages/Onboarding";
 import Home from "./pages/Home";
 import ReportPrice from "./pages/ReportPrice";
