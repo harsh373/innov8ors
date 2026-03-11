@@ -25,103 +25,105 @@ interface MapViewProps {
 
 const MapView = ({ data }: MapViewProps) => {
   const getMarkerColor = (deviation: number): string => {
-    const absDeviation = Math.abs(deviation);
-    if (absDeviation <= 5) return '#22c55e';
-    if (absDeviation <= 15) return '#eab308';
+    const abs = Math.abs(deviation);
+    if (abs <= 5) return '#22c55e';
+    if (abs <= 15) return '#eab308';
     return '#ef4444';
   };
 
-  const createCustomIcon = (color: string) => {
-    return L.divIcon({
+  const createCustomIcon = (color: string) =>
+    L.divIcon({
       className: 'custom-marker',
-      html: `
-        <div style="
-          background-color: ${color};
-          width: 25px;
-          height: 25px;
-          border-radius: 50%;
-          border: 3px solid white;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        "></div>
-      `,
-      iconSize: [25, 25],
-      iconAnchor: [12, 12],
+      html: `<div style="
+        background-color:${color};
+        width:28px;height:28px;
+        border-radius:50%;
+        border:3px solid white;
+        box-shadow:0 2px 8px rgba(0,0,0,0.35);
+      "></div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
     });
-  };
 
   return (
-    <MapContainer
-      center={[DELHI_CENTER.lat, DELHI_CENTER.lng]}
-      zoom={11}
-      style={{ height: '600px', width: '100%', borderRadius: '12px' }}
-      maxBounds={[
-        [28.40, 76.84],
-        [28.88, 77.35]
-      ]}
-      maxBoundsViscosity={1.0}
-      minZoom={10}
-      maxZoom={15}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <div style={{ position: 'relative', zIndex: 0, isolation: 'isolate' }}>
+      <style>{`
+        .leaflet-container { z-index: 0 !important; }
+        .leaflet-pane { z-index: 0 !important; }
+        .leaflet-top, .leaflet-bottom { z-index: 1 !important; }
+        .leaflet-popup { z-index: 2 !important; }
+        .leaflet-popup-content { margin: 12px 14px !important; }
+        .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important; }
+      `}</style>
 
-      {data.map((market) => {
-        const location = MARKET_LOCATIONS[market.marketName];
-        if (!location) return null;
+      <MapContainer
+        center={[DELHI_CENTER.lat, DELHI_CENTER.lng]}
+        zoom={11}
+        style={{
+          height: 'clamp(480px, 70vh, 650px)',
+          width: '100%',
+          borderRadius: '0 0 16px 16px',
+          position: 'relative',
+          zIndex: 0,
+        }}
+        minZoom={10}
+        maxZoom={15}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-        const markerColor = getMarkerColor(market.deviation);
+        {data.map((market) => {
+          const location = MARKET_LOCATIONS[market.marketName];
+          if (!location) return null;
 
-        return (
-          <Marker
-            key={market.marketName}
-            position={[location.lat, location.lng]}
-            icon={createCustomIcon(markerColor)}
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-bold text-lg mb-2">{market.marketName}</h3>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Actual Avg Price:</span>
-                    <span className="font-semibold">{formatCurrency(market.actualAvgPrice)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">AI Predicted:</span>
-                    <span className="font-semibold text-blue-600">
-                      {formatCurrency(market.predictedAvgPrice)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Deviation:</span>
-                    <span
-                      className={`font-semibold ${
-                        market.deviation > 0 ? 'text-red-600' : 'text-green-600'
-                      }`}
-                    >
-                      {market.deviation > 0 ? '+' : ''}
-                      {market.deviation.toFixed(2)}%
-                    </span>
-                  </div>
-                  <div className="mt-2 pt-2 border-t">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        market.isAnomaly
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}
-                    >
-                      {market.isAnomaly ? 'Anomalous' : 'Normal'}
-                    </span>
+          return (
+            <Marker
+              key={market.marketName}
+              position={[location.lat, location.lng]}
+              icon={createCustomIcon(getMarkerColor(market.deviation))}
+            >
+              <Popup autoPan={true} autoPanPadding={[20, 20]}>
+                <div style={{ minWidth: '190px' }}>
+                  <p style={{ fontWeight: 700, fontSize: '15px', marginBottom: '10px', color: '#111827' }}>
+                    📍 {market.marketName}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+                      <span style={{ color: '#6b7280' }}>Actual Price</span>
+                      <span style={{ fontWeight: 700, color: '#111827' }}>{formatCurrency(market.actualAvgPrice)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+                      <span style={{ color: '#6b7280' }}>AI Predicted</span>
+                      <span style={{ fontWeight: 700, color: '#2563eb' }}>{formatCurrency(market.predictedAvgPrice)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+                      <span style={{ color: '#6b7280' }}>Deviation</span>
+                      <span style={{ fontWeight: 700, color: market.deviation > 0 ? '#dc2626' : '#16a34a' }}>
+                        {market.deviation > 0 ? '+' : ''}{market.deviation.toFixed(2)}%
+                      </span>
+                    </div>
+                    <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #f3f4f6' }}>
+                      <span style={{
+                        padding: '3px 12px',
+                        borderRadius: '999px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        backgroundColor: market.isAnomaly ? '#fee2e2' : '#dcfce7',
+                        color: market.isAnomaly ? '#991b1b' : '#166534',
+                      }}>
+                        {market.isAnomaly ? '⚠ Anomalous' : '✓ Normal'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Popup>
-          </Marker>
-        );
-      })}
-    </MapContainer>
+              </Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
+    </div>
   );
 };
 
