@@ -19,4 +19,4 @@ createRoot(document.getElementById('root')!).render(
   </BrowserRouter>
 )
 
-serviceWorkerRegistration.register()
+serviceWorkerRegistration.unregister()

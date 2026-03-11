@@ -1,18 +1,17 @@
 import { Response } from 'express';
 import { calculateUserStats } from '../utils/analytics';
-import { AuthRequest } from '../middlewares/roleMiddleware';
-
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 export const getMyStats = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.userId) {
+    if (!req.clerkUserId) {
       return res.status(401).json({
         success: false,
         message: 'Authentication required',
       });
     }
 
-    const stats = await calculateUserStats(req.userId);
+    const stats = await calculateUserStats(req.clerkUserId);
 
     res.status(200).json({
       success: true,

@@ -7,4 +7,10 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
+   server: {
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+    },
+  },
 })
