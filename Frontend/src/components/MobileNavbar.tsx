@@ -20,11 +20,9 @@ const MobileNavbar = () => {
     <>
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b border-gray-200">
         <div className="flex justify-between items-center h-16 px-4">
-          <div 
-            className="text-2xl font-bold text-blue-600 cursor-pointer" 
-            onClick={() => navigate('/')}
-          >
-            FairPrice
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+            <img src="/icon-512.png" alt="FairPrice AI" className="w-8 h-8 rounded-lg object-cover" />
+            <span className="text-xl font-extrabold text-gray-900">FairPrice <span className="text-blue-600">AI</span></span>
           </div>
           <UserButton afterSignOutUrl="/login" />
         </div>
@@ -35,7 +33,6 @@ const MobileNavbar = () => {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
-            
             return (
               <Link
                 key={item.path}
@@ -45,15 +42,11 @@ const MobileNavbar = () => {
                 }`}
               >
                 <div className={`relative ${active ? 'transform -translate-y-1' : ''}`}>
-                  <div className={`p-2 rounded-full transition-all duration-200 ${
-                    active ? 'bg-blue-50' : ''
-                  }`}>
+                  <div className={`p-2 rounded-full transition-all duration-200 ${active ? 'bg-blue-50' : ''}`}>
                     <Icon size={24} strokeWidth={active ? 2.5 : 2} />
                   </div>
                 </div>
-                <span className={`text-xs mt-1 font-medium ${
-                  active ? 'text-blue-600' : 'text-gray-500'
-                }`}>
+                <span className={`text-xs mt-1 font-medium ${active ? 'text-blue-600' : 'text-gray-500'}`}>
                   {item.label}
                 </span>
               </Link>
