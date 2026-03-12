@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useReports } from '../api/reportApi';
 import { FileText } from 'lucide-react';
+import api from '../api/axios';
 
 const PRODUCTS = [
   { name: 'Milk', unit: 'liter' },
@@ -52,6 +53,7 @@ const ReportPrice = () => {
     month: '',
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [errors, setErrors] = useState<any>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null);
@@ -69,6 +71,10 @@ const ReportPrice = () => {
     }
   }, [prefilledProduct]);
 
+  useEffect(() => {
+  api.get('/warmup').catch(() => {});
+}, []);
+
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const productName = e.target.value;
     const product = PRODUCTS.find((p) => p.name === productName);
@@ -80,6 +86,7 @@ const ReportPrice = () => {
     }));
 
     if (errors.productName) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setErrors((prev: any) => ({ ...prev, productName: '' }));
     }
   };
