@@ -1,8 +1,8 @@
 # FairPrice AI
 
-AI-powered commodity price monitoring platform that detects market price manipulation and anomalies across Delhi mandis using machine learning and community-reported data.
+AI-powered commodity price monitoring platform that detects market price manipulation and anomalies across Delhi Markets using machine learning and community-reported data.
 
-Built during a hackathon to improve **price transparency in agricultural markets**.
+Built during a hackathon to improve **price transparency in Informal markets**.
 
 ---
 
@@ -116,25 +116,38 @@ Used for generating anomaly explanations.
 ---
 
 # System Architecture
-                 ┌──────────────┐
-                 │   Frontend   │
-                 │ React + TS   │
-                 └──────┬───────┘
-                        │ API Calls
-                        ▼
-                ┌───────────────┐
-                │ Node Backend  │
-                │ Express APIs  │
-                └──────┬────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        ▼                              ▼
-┌───────────────┐              ┌───────────────┐
-│ ML Service    │              │ Gemini API    │
-│ Random Forest │              │ Explanation   │
-│ Python        │              │ Generation    │
-└───────────────┘              └───────────────┘
-
+                    ┌────────────────────┐
+                    │       Client       │
+                    │  React + TypeScript│
+                    └─────────┬──────────┘
+                              │
+                              │ HTTPS Requests
+                              ▼
+                    ┌────────────────────┐
+                    │   Node.js Backend  │
+                    │   Express APIs     │
+                    └───────┬───────┬────┘
+                            │       │
+                            │       │
+                            ▼       ▼
+                  ┌────────────┐   ┌──────────────┐
+                  │  MongoDB   │   │  Clerk Auth  │
+                  │  Database  │   │ Authentication│
+                  └────────────┘   └──────────────┘
+                            │
+                            │
+                            ▼
+                    ┌───────────────────┐
+                    │   ML Microservice │
+                    │   Random Forest   │
+                    │   Python + sklearn│
+                    └─────────┬─────────┘
+                              │
+                              ▼
+                     ┌─────────────────┐
+                     │   Gemini API    │
+                     │ AI Explanation  │
+                     └─────────────────┘
 
 ---
 
@@ -193,6 +206,7 @@ Accuracy achieved during testing:
 # Deployment
 
 Frontend and Backend -Vercel
+
 Ml-Service-Render
 
 
