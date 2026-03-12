@@ -3,19 +3,17 @@ import { Report } from '../models/reportModel';
 import { User } from '../models/userModel';
 import { AuthRequest } from '../middlewares/authMiddleware';
 
-
 export const getFlaggedReports = async (req: AuthRequest, res: Response) => {
   try {
-    console.log('Fetching flagged reports...');
-
     const flaggedReports = await Report.find({
-      'mlAnalysis.anomaly': true,
+      $or: [
+        { 'mlAnalysis.anomaly': true },
+        { status: 'flagged' },
+      ],
     })
-      .sort({ 'mlAnalysis.deviation': -1 }) 
-      .select('productName marketName price unit month mlAnalysis createdAt userId')
+      .sort({ createdAt: -1 })
+      .select('productName marketName price unit month mlAnalysis createdAt userId status')
       .lean();
-
-    console.log(` Found ${flaggedReports.length} flagged reports`);
 
     return res.status(200).json({
       success: true,
@@ -23,7 +21,6 @@ export const getFlaggedReports = async (req: AuthRequest, res: Response) => {
       data: flaggedReports,
     });
   } catch (error: any) {
-    console.error(' Error fetching flagged reports:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch flagged reports',
@@ -32,29 +29,17 @@ export const getFlaggedReports = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const inspectReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    console.log(`Inspecting report: ${id}`);
-
     const report = await Report.findById(id).lean();
 
     if (!report) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found',
-      });
+      return res.status(404).json({ success: false, message: 'Report not found' });
     }
 
-    console.log(' Report found');
-
-    return res.status(200).json({
-      success: true,
-      data: report,
-    });
+    return res.status(200).json({ success: true, data: report });
   } catch (error: any) {
-    console.error(' Error inspecting report:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to inspect report',
@@ -63,11 +48,9 @@ export const inspectReport = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const markReportValid = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    console.log(` Marking report as valid: ${id}`);
 
     const report = await Report.findByIdAndUpdate(
       id,
@@ -83,21 +66,11 @@ export const markReportValid = async (req: AuthRequest, res: Response) => {
     );
 
     if (!report) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found',
-      });
+      return res.status(404).json({ success: false, message: 'Report not found' });
     }
 
-    console.log(' Report marked as valid');
-
-    return res.status(200).json({
-      success: true,
-      message: 'Report marked as valid',
-      data: report,
-    });
+    return res.status(200).json({ success: true, message: 'Report marked as valid', data: report });
   } catch (error: any) {
-    console.error('Error marking report as valid:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to mark report as valid',
@@ -106,29 +79,17 @@ export const markReportValid = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const deleteReport = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    console.log(`Deleting report: ${id}`);
-
     const report = await Report.findByIdAndDelete(id);
 
     if (!report) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found',
-      });
+      return res.status(404).json({ success: false, message: 'Report not found' });
     }
 
-    console.log(' Report deleted');
-
-    return res.status(200).json({
-      success: true,
-      message: 'Report deleted successfully',
-    });
+    return res.status(200).json({ success: true, message: 'Report deleted successfully' });
   } catch (error: any) {
-    console.error(' Error deleting report:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to delete report',
@@ -137,11 +98,8 @@ export const deleteReport = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const getMarketHealth = async (req: AuthRequest, res: Response) => {
   try {
-    console.log('📊 Fetching market health overview...');
-
     const marketStats = await Report.aggregate([
       {
         $group: {
@@ -150,21 +108,15 @@ export const getMarketHealth = async (req: AuthRequest, res: Response) => {
           avgPredictedPrice: { $avg: '$mlAnalysis.expectedPrice' },
           totalReports: { $sum: 1 },
           flaggedReports: {
-            $sum: {
-              $cond: ['$mlAnalysis.anomaly', 1, 0],
-            },
+            $sum: { $cond: ['$mlAnalysis.anomaly', 1, 0] },
           },
         },
       },
       {
         $project: {
           market: '$_id',
-          avgActualPrice: { 
-            $ifNull: [{ $round: ['$avgActualPrice', 2] }, 0] 
-          },
-          avgPredictedPrice: { 
-            $ifNull: [{ $round: ['$avgPredictedPrice', 2] }, 0] 
-          },
+          avgActualPrice: { $ifNull: [{ $round: ['$avgActualPrice', 2] }, 0] },
+          avgPredictedPrice: { $ifNull: [{ $round: ['$avgPredictedPrice', 2] }, 0] },
           avgDeviation: {
             $cond: {
               if: { $eq: ['$avgPredictedPrice', 0] },
@@ -173,12 +125,7 @@ export const getMarketHealth = async (req: AuthRequest, res: Response) => {
                 $round: [
                   {
                     $multiply: [
-                      {
-                        $divide: [
-                          { $subtract: ['$avgActualPrice', '$avgPredictedPrice'] },
-                          '$avgPredictedPrice',
-                        ],
-                      },
+                      { $divide: [{ $subtract: ['$avgActualPrice', '$avgPredictedPrice'] }, '$avgPredictedPrice'] },
                       100,
                     ],
                   },
@@ -195,15 +142,8 @@ export const getMarketHealth = async (req: AuthRequest, res: Response) => {
       { $sort: { flaggedReports: -1 } },
     ]);
 
-    console.log(` Found stats for ${marketStats.length} markets`);
-
-    return res.status(200).json({
-      success: true,
-      count: marketStats.length,
-      data: marketStats,
-    });
+    return res.status(200).json({ success: true, count: marketStats.length, data: marketStats });
   } catch (error: any) {
-    console.error('Error fetching market health:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch market health',
@@ -212,21 +152,15 @@ export const getMarketHealth = async (req: AuthRequest, res: Response) => {
   }
 };
 
-
 export const getUserActivity = async (req: AuthRequest, res: Response) => {
   try {
-    console.log('👥 Fetching user activity overview...');
-
-    
     const userStats = await Report.aggregate([
       {
         $group: {
           _id: '$userId',
           totalReports: { $sum: 1 },
           flaggedReports: {
-            $sum: {
-              $cond: ['$mlAnalysis.anomaly', 1, 0],
-            },
+            $sum: { $cond: ['$mlAnalysis.anomaly', 1, 0] },
           },
           lastActivity: { $max: '$createdAt' },
         },
@@ -239,12 +173,7 @@ export const getUserActivity = async (req: AuthRequest, res: Response) => {
           lastActivity: 1,
           flaggedPercentage: {
             $round: [
-              {
-                $multiply: [
-                  { $divide: ['$flaggedReports', '$totalReports'] },
-                  100,
-                ],
-              },
+              { $multiply: [{ $divide: ['$flaggedReports', '$totalReports'] }, 100] },
               2,
             ],
           },
@@ -254,15 +183,8 @@ export const getUserActivity = async (req: AuthRequest, res: Response) => {
       { $sort: { flaggedReports: -1 } },
     ]);
 
-    console.log(` Found activity for ${userStats.length} users`);
-
-    return res.status(200).json({
-      success: true,
-      count: userStats.length,
-      data: userStats,
-    });
+    return res.status(200).json({ success: true, count: userStats.length, data: userStats });
   } catch (error: any) {
-    console.error(' Error fetching user activity:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch user activity',
