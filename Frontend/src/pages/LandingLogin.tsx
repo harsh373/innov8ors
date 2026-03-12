@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SignIn, SignUp } from "@clerk/clerk-react";
-import { ShieldCheck, MapPin, BrainCircuit, Users, AlertTriangle, BarChart3, ChevronRight } from "lucide-react";
+import {  MapPin, BrainCircuit, Users, AlertTriangle, BarChart3, ChevronRight } from "lucide-react";
 
 export default function LandingLogin() {
   const [authMode, setAuthMode] = useState<"landing" | "signin" | "signup">("landing");
@@ -50,9 +50,7 @@ export default function LandingLogin() {
       {/* Navbar */}
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <ShieldCheck size={17} className="text-white" />
-          </div>
+          <img src="/icon-512.png" alt="FairPrice AI" className="w-8 h-8 rounded-lg object-cover" />
           <span style={{ fontWeight: 800 }} className="text-lg text-gray-900">FairPrice AI</span>
         </div>
 
@@ -107,7 +105,7 @@ export default function LandingLogin() {
               <div className="absolute inset-0 bg-blue-50 rounded-3xl rotate-3" />
               <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100 p-6 float">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-bold text-gray-800">Azadpur Market</span>
+                  <span className="text-sm font-bold text-gray-800">Azadpur Mandi</span>
                   <span className="text-xs bg-red-50 text-red-600 font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
                     <AlertTriangle size={10} /> Spike
                   </span>
@@ -170,7 +168,7 @@ export default function LandingLogin() {
         </div>
       </section>
 
-      
+      {/* Markets */}
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-6">
@@ -187,7 +185,7 @@ export default function LandingLogin() {
         </div>
       </section>
 
-      
+      {/* CTA */}
       <section className="pb-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="bg-blue-600 rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
@@ -212,13 +210,11 @@ export default function LandingLogin() {
         </div>
       </section>
 
-      
+      {/* Footer */}
       <footer className="border-t border-gray-100 py-7">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-              <ShieldCheck size={13} className="text-white" />
-            </div>
+            <img src="/icon-512.png" alt="FairPrice AI" className="w-6 h-6 rounded-md object-cover" />
             <span className="font-bold text-gray-700 text-sm">FairPrice AI</span>
           </div>
           <p className="text-xs text-gray-400">Built for Delhi. Powered by ML + Gemini AI.</p>
@@ -238,9 +234,7 @@ const AuthWrapper = ({ children, onBack, title, subtitle }: {
     <style>{`@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');`}</style>
     <nav className="max-w-6xl mx-auto px-4 sm:px-6 py-5 w-full flex items-center justify-between">
       <button onClick={onBack} className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-          <ShieldCheck size={17} className="text-white" />
-        </div>
+        <img src="/icon-512.png" alt="FairPrice AI" className="w-8 h-8 rounded-lg object-cover" />
         <span style={{ fontWeight: 800 }} className="text-lg text-gray-900">FairPrice AI</span>
       </button>
       <button onClick={onBack} className="text-sm font-semibold text-gray-400 hover:text-gray-700 transition-colors">
